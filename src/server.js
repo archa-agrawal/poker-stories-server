@@ -6,6 +6,7 @@ const session = require("express-session");
 const passport = require("passport");
 const userController = require("./controllers/users");
 const roomController = require("./controllers/rooms");
+const voterController = require("./controllers/voters");
 
 const { PORT, UI_SERVER, SECRET_KEY } = process.env;
 
@@ -41,6 +42,7 @@ app.use(passport.session());
 
 app.use("/user", userController());
 app.use("/room", roomController());
+app.use("/voter", voterController());
 
 app.listen(`${PORT}`, () => {
   console.log(`listening on port ${PORT}`);
