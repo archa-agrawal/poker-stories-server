@@ -24,8 +24,21 @@ const getAllRooms = async (user) => {
   return rooms;
 };
 
+const isRoomOwner = async (user, roomId) => {
+  const ownerId = await knex
+    .select("user_id")
+    .from("rooms")
+    .where("id", roomId)
+    .first();
+  if (ownerId.user_id === user.id) {
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
   createRoom,
   getRoom,
   getAllRooms,
+  isRoomOwner,
 };

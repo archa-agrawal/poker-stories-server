@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { createRoom, getRoom, getAllRooms } = require("../helpers/rooms");
+const { getStories } = require("../helpers/stories");
 const { loginRequired } = require("../helpers/users");
 
 module.exports = () => {
@@ -27,6 +28,8 @@ module.exports = () => {
   router.get("/:id", async (req, res) => {
     try {
       const room = await getRoom(req.params.id);
+      const stories = await getStories(req.params.id);
+      room.stories = stories;
       res.send(room);
     } catch (e) {
       console.error(e);
