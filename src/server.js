@@ -8,6 +8,7 @@ const userController = require("./controllers/users");
 const roomController = require("./controllers/rooms");
 const voterController = require("./controllers/voters");
 const storyController = require("./controllers/stories");
+const storyPointController = require("./controllers/storyPoints");
 
 const { PORT, UI_SERVER, SECRET_KEY } = process.env;
 
@@ -45,6 +46,7 @@ app.use("/user", userController());
 app.use("/room", roomController());
 app.use("/voter", voterController());
 app.use("/story", storyController());
+app.use("/storyPoint", storyPointController());
 
 app.listen(`${PORT}`, () => {
   console.log(`listening on port ${PORT}`);

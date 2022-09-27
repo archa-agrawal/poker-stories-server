@@ -23,7 +23,21 @@ const getVoter = async (user, roomId) => {
   return voter;
 };
 
+const isVoterRegistered = async (voterId, roomId) => {
+  const id = await knex("voters")
+    .where({
+      id: voterId,
+      room_id: roomId,
+    })
+    .select("id");
+  if (id.length) {
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
   registerVoter,
   getVoter,
+  isVoterRegistered,
 };
