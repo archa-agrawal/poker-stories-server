@@ -36,8 +36,17 @@ const isVoterRegistered = async (voterId, roomId) => {
   return false;
 };
 
+const findVoterName = async (voterId) => {
+  const voter = await knex("voters")
+    .where("id", voterId)
+    .select("name")
+    .first();
+  return voter.name;
+};
+
 module.exports = {
   registerVoter,
   getVoter,
   isVoterRegistered,
+  findVoterName,
 };

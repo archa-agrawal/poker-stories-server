@@ -16,7 +16,21 @@ const getStories = async (roomId) => {
   return stories;
 };
 
+const getStory = async (storyId) => {
+  const [story] = await knex("stories").where("id", storyId);
+  return story;
+};
+
+const updateFinalPoint = async (storyId, points) => {
+  const [story] = await knex("stories")
+    .where("id", storyId)
+    .update({ final_points: points }, ["*"]);
+  return story;
+};
+
 module.exports = {
   createStory,
   getStories,
+  getStory,
+  updateFinalPoint,
 };
