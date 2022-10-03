@@ -15,7 +15,7 @@ module.exports = () => {
       res.sendStatus(500);
     }
   });
-  router.get("/all", loginRequired, async (req, res) => {
+  router.get("/", loginRequired, async (req, res) => {
     try {
       const rooms = await getAllRooms(req.user);
       res.send(rooms);

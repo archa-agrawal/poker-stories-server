@@ -17,13 +17,6 @@ const getRoom = async (id) => {
   return room;
 };
 
-const getAllRooms = async (user) => {
-  const rooms = await knex("rooms")
-    .where("user_id", user.id)
-    .select("id", "name");
-  return rooms;
-};
-
 const isRoomOwner = async (user, roomId) => {
   const ownerId = await knex
     .select("user_id")
@@ -34,6 +27,24 @@ const isRoomOwner = async (user, roomId) => {
     return true;
   }
   return false;
+};
+
+const getAllRooms = async (user) => {
+  const rooms = await knex("rooms")
+    .leftJoin("voters", "rooms.id", "voters.room_id")
+    .select("rooms.*")
+    .where({
+      "rooms.user_id": user.id,
+    })
+    .orWhere({
+      "voters.user_id": user.id,
+    })
+    .groupBy("rooms.id");
+  return rooms.map(({ id, name, user_id }) => ({
+    id,
+    name,
+    isRoomOwner: user.id === user_id,
+  }));
 };
 
 module.exports = {
