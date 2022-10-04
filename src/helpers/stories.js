@@ -6,9 +6,16 @@ const createStory = async (title, roomId) => {
       title: title,
       room_id: roomId,
     },
-    ["id", "title"]
+    ["id", "title", "final_points", "room_id"]
   );
   return story;
+};
+const getRoomId = async (storyId) => {
+  const [room] = await knex
+    .select("room_id")
+    .from("stories")
+    .where("id", storyId);
+  return room;
 };
 
 const getStories = async (roomId) => {
@@ -33,4 +40,5 @@ module.exports = {
   getStories,
   getStory,
   updateFinalPoint,
+  getRoomId,
 };
