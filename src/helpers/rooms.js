@@ -8,6 +8,7 @@ const createRoom = async (user, { name }) => {
     },
     ["id", "name"]
   );
+  room.isRoomOwner = true;
 
   return room;
 };

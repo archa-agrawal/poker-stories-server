@@ -2,6 +2,7 @@ const { Router } = require("express");
 const { createRoom, getRoom, getAllRooms } = require("../helpers/rooms");
 const { getStories } = require("../helpers/stories");
 const { loginRequired } = require("../helpers/users");
+const { getVoter, registerVoter } = require("../helpers/voters");
 
 module.exports = () => {
   const router = Router();
@@ -30,6 +31,13 @@ module.exports = () => {
       const room = await getRoom(req.params.id);
       const stories = await getStories(req.params.id);
       room.stories = stories;
+      const existingVoter = await getVoter(req.user, req.params.id);
+      if (existingVoter) {
+        room.voterId = existingVoter.id;
+      } else {
+        const voter = await registerVoter(req.user, req.params.id);
+        room.voterId = voter.id;
+      }
       res.send(room);
     } catch (e) {
       console.error(e);

@@ -6,7 +6,6 @@ const session = require("express-session");
 const passport = require("passport");
 const userController = require("./controllers/users");
 const roomController = require("./controllers/rooms");
-const voterController = require("./controllers/voters");
 const storyController = require("./controllers/stories");
 const storyPointController = require("./controllers/storyPoints");
 
@@ -44,7 +43,6 @@ app.use(passport.session());
 
 app.use("/user", userController());
 app.use("/room", roomController());
-app.use("/voter", voterController());
 app.use("/story", storyController());
 app.use("/storyPoint", storyPointController());
 
