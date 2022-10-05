@@ -8,8 +8,11 @@ const givePoints = async (pointsData) => {
       voter_id: pointsData.voterId,
       story_id: pointsData.storyId,
     },
-    ["id", "points"]
+    ["id", "points", "story_id"]
   );
+  if (storyPoints.id) {
+    storyPoints.hasVoted = true;
+  }
   return storyPoints;
 };
 
@@ -26,7 +29,21 @@ const getStoryPoints = async (storyId) => {
   return points;
 };
 
+const hasUserVoted = async (voterId, storyId) => {
+  const vote = await knex("story_points")
+    .where({
+      story_id: storyId,
+      voter_id: voterId,
+    })
+    .first();
+  if (vote) {
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
   givePoints,
   getStoryPoints,
+  hasUserVoted,
 };

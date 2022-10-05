@@ -18,7 +18,7 @@ const getVoter = async (user, roomId) => {
       user_id: user.id,
       room_id: roomId,
     })
-    .select("id", "room_id")
+    .select("*")
     .first();
   return voter;
 };

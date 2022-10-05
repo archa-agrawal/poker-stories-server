@@ -6,7 +6,7 @@ const {
   updateFinalPoint,
   getRoomId,
 } = require("../helpers/stories");
-const { getStoryPoints } = require("../helpers/storyPoints");
+const { getStoryPoints, hasUserVoted } = require("../helpers/storyPoints");
 const { loginRequired } = require("../helpers/users");
 const { isVoterRegistered, getVoter } = require("../helpers/voters");
 
@@ -29,29 +29,30 @@ module.exports = () => {
 
   router.get("/:id", loginRequired, async (req, res) => {
     try {
-      const roomId = await getRoomId(req.params.id);
+      const storyId = req.params.id;
+      const roomId = await getRoomId(storyId);
       const voter = await getVoter(req.user, roomId.room_id);
       const isRegistered = await isVoterRegistered(voter.id, roomId.room_id);
       if (!isRegistered) {
         return res.send("please register to the room");
       }
       const isOwner = await isRoomOwner(req.user, roomId.room_id);
-      const points = await getStoryPoints(req.params.id);
-      const story = await getStory(req.params.id);
+      const points = await getStoryPoints(storyId);
+      const hasVoted = await hasUserVoted(voter.id, storyId);
+      const story = await getStory(storyId);
       story.isOwner = isOwner;
       story.points = points;
+      story.hasVoted = hasVoted;
       res.send(story);
     } catch (e) {
       console.error(e);
       res.sendStatus(500);
     }
   });
-  router.post("/:id", loginRequired, async (req, res) => {
+  router.post("/", loginRequired, async (req, res) => {
     try {
-      const isRegistered = await isVoterRegistered(
-        req.body.voterId,
-        req.body.roomId
-      );
+      const voter = await getVoter(req.user, req.body.roomId);
+      const isRegistered = await isVoterRegistered(voter.id, req.body.roomId);
       if (!isRegistered) {
         return res.send("please register to the room");
       }
@@ -60,7 +61,7 @@ module.exports = () => {
         return res.send("unauthorized");
       }
       const updatedstory = await updateFinalPoint(
-        req.params.id,
+        req.body.storyId,
         req.body.finalPoints
       );
       return res.send(updatedstory);
